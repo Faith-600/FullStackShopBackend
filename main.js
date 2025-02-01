@@ -47,7 +47,7 @@ const io = new Server(httpServer, {
 const namePattern = /^[a-zA-Z\s]{2,50}$/;
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-const db = mysql.createPool({
+const db = mysql.createConnection({
   host: dbHost,
   user: dbUsers,
   password: dbPassword,
