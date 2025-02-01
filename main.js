@@ -14,8 +14,8 @@ const dbPassword = process.env.DB_PASSWORD;
 const sessionSecret = process.env.SESSION_SECRET;
 const dbUsers = process.env.DB_USER;
 const dbName = process.env.DB_NAME;
-
-
+const dbPort = process.env.DB_PORT;
+const dbHost = process.env.DB_HOST;
 
 
 
@@ -47,12 +47,19 @@ const io = new Server(httpServer, {
 const namePattern = /^[a-zA-Z\s]{2,50}$/;
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-const db = mysql.createConnection({
-  host: "localhost",
+const db = mysql.createPool({
+  host: dbHost,
   user: dbUsers,
   password: dbPassword,
   database: dbName,
+  port:dbPort
 });
+
+
+
+app.get('/',(req,res)=>{
+  res.json('Hello')
+})
 
 
 
