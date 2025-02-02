@@ -12,7 +12,6 @@ import Post from './Models/Post'
 import Comment from './Models/Comment'
 import Message from './Models/Message';
 import bcrypt from 'bcrypt';
-import session from 'express-session';
 import MongoStore from 'connect-mongo';
 
 dotenv.config();
