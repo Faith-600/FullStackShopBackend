@@ -278,9 +278,10 @@ io.on('connection', (socket) => {
   });
 });
 
-export function handler(req, res) {
+export default function handler(req, res) {
   res.status(200).send("Hello, World!");
 }
+
 
 // export default app;
 
