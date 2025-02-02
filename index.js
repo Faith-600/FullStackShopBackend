@@ -16,7 +16,7 @@ import MongoStore from 'connect-mongo';
 
 dotenv.config();
 
-const mongoUrl = process.env.MONGO_URI
+const mongoUrl = process.env.MONGO_URL
 
 const sessionSecret = process.env.SESSION_SECRET;
 
