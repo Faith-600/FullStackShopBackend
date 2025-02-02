@@ -7,10 +7,10 @@ import bodyParser from 'body-parser';
 import { Server } from 'socket.io'
 import {createServer} from 'http'
 import dotenv  from 'dotenv'
-import User from './Models/User'
-import Post from './Models/Post'
-import Comment from './Models/Comment'
-import Message from './Models/Message';
+import User from './Models/User.js'
+import Post from './Models/Post.js'
+import Comment from './Models/Comment.js'
+import Message from './Models/Message.js';
 import bcrypt from 'bcrypt';
 import MongoStore from 'connect-mongo';
 
