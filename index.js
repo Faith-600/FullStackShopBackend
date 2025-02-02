@@ -16,7 +16,7 @@ import MongoStore from 'connect-mongo';
 
 dotenv.config();
 
-const mongoUri = process.env.MONGO_URI
+const mongoUrl = process.env.MONGO_URI
 
 const sessionSecret = process.env.SESSION_SECRET;
 
@@ -32,7 +32,7 @@ app.use(session({
   resave: false,                  
   saveUninitialized: true,           
   store: MongoStore.create({
-    mongoUrl: mongoUri, 
+    mongoUrl: mongoUrl, 
     collectionName: 'sessions',
   })
 }));
@@ -48,7 +48,7 @@ const io = new Server(httpServer, {
 });
 
 
-mongoose.connect(mongoUri, {
+mongoose.connect(mongoUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }).then(() => {
