@@ -58,9 +58,6 @@ mongoose.connect(mongoUrl).then(() => {
 
 
 
-app.get('/',(req,res)=>{
-  res.json('Hello')
-})
 
 
 
@@ -281,7 +278,11 @@ io.on('connection', (socket) => {
   });
 });
 
-export default app;
+export function handler(req, res) {
+  res.status(200).send("Hello, World!");
+}
+
+// export default app;
 
 // app.listen(PORT, () => {
 //   console.log("Connected to backend");
