@@ -281,7 +281,7 @@ io.on('connection', (socket) => {
   });
 });
 
- module.exports = app;
+export default app;
 
 // app.listen(PORT, () => {
 //   console.log("Connected to backend");
