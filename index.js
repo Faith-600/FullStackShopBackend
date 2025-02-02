@@ -17,7 +17,7 @@ import MongoStore from 'connect-mongo';
 dotenv.config();
 
 const mongoUrl = process.env.MONGO_URL;
-const PORT = process.env.PORT || 3001;
+
 
 const sessionSecret = process.env.SESSION_SECRET;
 
@@ -284,6 +284,6 @@ io.on('connection', (socket) => {
 
 
 
-app.listen(PORT, () => {
-  console.log("Connected to backend");
-});
+// app.listen(PORT, () => {
+//   console.log("Connected to backend");
+// });
