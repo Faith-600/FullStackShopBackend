@@ -16,7 +16,8 @@ import MongoStore from 'connect-mongo';
 
 dotenv.config();
 
-const mongoUrl = process.env.MONGO_URL
+const mongoUrl = process.env.MONGO_URL;
+const PORT = process.env.PORT || 3001;
 
 const sessionSecret = process.env.SESSION_SECRET;
 
@@ -48,10 +49,7 @@ const io = new Server(httpServer, {
 });
 
 
-mongoose.connect(mongoUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }).then(() => {
+mongoose.connect(mongoUrl).then(() => {
     console.log('Connected to MongoDB');
   }).catch((err) => {
     console.error('MongoDB connection error:', err);
@@ -286,6 +284,6 @@ io.on('connection', (socket) => {
 
 
 
-app.listen(3001, () => {
+app.listen(PORT, () => {
   console.log("Connected to backend");
 });
