@@ -60,6 +60,9 @@ mongoose.connect(mongoUrl).then(() => {
 
 
 
+app.get('/',(req,res)=>{
+  res.json('Hello')
+})
 
 app.get('/',(req,res)=>{
   if(req.session.name){
@@ -278,9 +281,9 @@ io.on('connection', (socket) => {
   });
 });
 
-export default function handler(req, res) {
-  res.status(200).send("Hello, World!");
-}
+// export default function handler(req, res) {
+//   res.status(200).send("Hello, World!");
+// }
 
 
 // export default app;
