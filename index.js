@@ -53,8 +53,6 @@ const io = new Server(httpServer, {
 
 
 mongoose.connect(mongoUrl,{
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   serverSelectionTimeoutMS: 5000,
 }).then(() => {
     console.log('Connected to MongoDB')
