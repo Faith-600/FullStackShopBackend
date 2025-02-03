@@ -281,13 +281,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// export default function handler(req, res) {
-//   res.status(200).send("Hello, World!");
-// }
 
 
-// export default app;
+export default app;
 
-// app.listen(PORT, () => {
-//   console.log("Connected to backend");
-// });
+
