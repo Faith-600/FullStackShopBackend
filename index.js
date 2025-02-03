@@ -60,9 +60,9 @@ mongoose.connect(mongoUrl).then(() => {
 
 
 
-app.get('/',(req,res)=>{
-  res.json('Hello')
-})
+app.get('/api', (req, res) => {
+  res.json({ message: 'Hello from the serverless function!' });
+});
 
 app.get('/',(req,res)=>{
   if(req.session.name){
