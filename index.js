@@ -17,6 +17,7 @@ import MongoStore from 'connect-mongo';
 dotenv.config();
 
 const mongoUrl = process.env.MONGO_URL;
+const port =process.env.PORT || 3001;
 
 
 
@@ -52,7 +53,10 @@ const io = new Server(httpServer, {
 
 
 mongoose.connect(mongoUrl).then(() => {
-    console.log('Connected to MongoDB');
+    console.log('Connected to MongoDB')
+    app.listen(port, ()=>{
+      console.log("server is running on port " + port)
+    });
   }).catch((err) => {
     console.error('MongoDB connection error:', err);
   });
