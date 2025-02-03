@@ -52,7 +52,11 @@ const io = new Server(httpServer, {
 });
 
 
-mongoose.connect(mongoUrl).then(() => {
+mongoose.connect(mongoUrl,{
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+}).then(() => {
     console.log('Connected to MongoDB')
     app.listen(port, ()=>{
       console.log("server is running on port " + port)
