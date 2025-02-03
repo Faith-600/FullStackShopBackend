@@ -20,6 +20,7 @@ const mongoUrl = process.env.MONGO_URL;
 
 
 
+
 const sessionSecret = process.env.SESSION_SECRET;
 
 const app = express();
@@ -283,6 +284,6 @@ io.on('connection', (socket) => {
 
 
 
-export default app;
+
 
 
