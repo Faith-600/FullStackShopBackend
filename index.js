@@ -183,7 +183,8 @@ app.delete('/posts/:id', async (req, res) => {
 app.post('/api/posts/:postId/comments', async (req, res) => {
   try {
     const { content, parentId, username } = req.body;
-    const newComment = new Comment({ postId: req.params.postId, content, parentId, username });
+    const { postId } = req.params;
+    const newComment = new Comment({ content, username, postId, parentId: parentId || null });
     await newComment.save();
     res.status(201).json(newComment);
   } catch (err) {
