@@ -202,19 +202,19 @@ app.get('/api/posts/:postId/comments', async (req, res) => {
 });
 
 
-// Get Comments for a Specific Post
-app.get('/api/posts/:postId/comments', (req, res) => {
-  const { postId } = req.params;
+// // Get Comments for a Specific Post
+// app.get('/api/posts/:postId/comments', (req, res) => {
+//   const { postId } = req.params;
 
-  const query = 'SELECT * FROM comments WHERE postId = ? ORDER BY createdAt DESC';
-  db.query(query, [postId], (err, results) => {
-      if (err) {
-          console.error('Error fetching comments:', err);
-          return res.status(500).json({ error: 'Failed to fetch comments.' });
-      }
-      res.status(200).json(results);
-  });
-});
+//   const query = 'SELECT * FROM comments WHERE postId = ? ORDER BY createdAt DESC';
+//   db.query(query, [postId], (err, results) => {
+//       if (err) {
+//           console.error('Error fetching comments:', err);
+//           return res.status(500).json({ error: 'Failed to fetch comments.' });
+//       }
+//       res.status(200).json(results);
+//   });
+// });
 
 
 
