@@ -297,6 +297,10 @@ io.on('connection', (socket) => {
   });
 });
 
+httpServer.listen(port, () => {
+  console.log(`Socket.IO server running on port ${port}`);
+});
+
 export default app;
 
 
