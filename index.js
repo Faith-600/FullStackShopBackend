@@ -4,7 +4,7 @@ import cors from 'cors';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import { Server } from 'socket.io'
+// import { Server } from 'socket.io'
 import {createServer} from 'http'
 import dotenv  from 'dotenv'
 import User from './Models/User.js'
@@ -43,14 +43,14 @@ app.use(session({
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-const httpServer = createServer(app); 
-const io = new Server(httpServer, {
-  cors: {
-    origin: 'https://full-stack-shop-rouge.vercel.app', 
-    methods: ["GET", "POST"],
-    credentials:true
-  }
-});
+// const httpServer = createServer(app); 
+// const io = new Server(httpServer, {
+//   cors: {
+//     origin: 'https://full-stack-shop-rouge.vercel.app', 
+//     methods: ["GET", "POST"],
+//     credentials:true
+//   }
+// });
 
 
 mongoose.connect(mongoUrl,{
@@ -183,31 +183,36 @@ app.delete('/posts/:id', async (req, res) => {
 // Add a new comment
 app.post('/api/posts/:postId/comments', async (req, res) => {
   try {
-    console.log("Request Body:", req.body);
-    console.log("Post ID:", req.params.postId);
+      console.log("Request Body:", req.body);
+      console.log("Post ID:", req.params.postId);
 
-    const { content, parentId, username } = req.body;
-    const { postId } = req.params;
+      const { content, parentId, username } = req.body;
+      const { postId } = req.params;
 
-    if (!content || !username) {
-      return res.status(400).json({ error: 'Content and username are required' });
-    }
-    
-    const newComment = new Comment({ content, username, postId, parentId: parentId || null });
-    await newComment.save();
-    res.status(201).json(newComment);
+      if (!content || !username) {
+          return res.status(400).json({ error: 'Content and username are required' });
+      }
+
+      const newComment = new Comment({ content, username, postId, parentId: parentId || null });
+      await newComment.save();
+      console.log('New comment saved:', newComment); // Log the saved comment
+      res.status(201).json(newComment);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to add comment' });
+      console.error('Error saving comment:', err); // Log the error
+      res.status(500).json({ error: 'Failed to add comment' });
   }
 });
 
 // Get comments for a specific post
 app.get('/api/posts/:postId/comments', async (req, res) => {
   try {
-    const comments = await Comment.find({ postId: req.params.postId }).sort({ createdAt: -1 });
-    res.status(200).json(comments);
+      console.log('Fetching comments for postId:', req.params.postId); // Log the postId
+      const comments = await Comment.find({ postId: req.params.postId }).sort({ createdAt: -1 });
+      console.log('Fetched comments:', comments); // Log the fetched comments
+      res.status(200).json(comments);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch comments.' });
+      console.error('Error fetching comments:', err); // Log the error
+      res.status(500).json({ error: 'Failed to fetch comments.' });
   }
 });
 
@@ -271,7 +276,7 @@ app.post('/messages', async (req, res) => {
    
     const newMessage = new Message({ sender, receiver, content });
     await newMessage.save();
-   io.emit('newMessage', { sender, receiver, content });
+  //  io.emit('newMessage', { sender, receiver, content });
    res.status(201).json({ message: 'Message sent successfully.' });
   } catch (err) {
     console.error('Error saving message:', err);
@@ -279,28 +284,28 @@ app.post('/messages', async (req, res) => {
   }
 });
 
-io.on('connection', (socket) => {
-  console.log('connected');
+// io.on('connection', (socket) => {
+  // console.log('connected');
 
-  socket.on('newMessage', async (msg) => {
-    try {
-      // Assuming you have a Chat model to save messages
-      const newMessage = new Chat(msg);
-      await newMessage.save();
-      io.emit('message', msg); // Emit the message to all clients
-    } catch (err) {
-      console.log(err);
-    }
-  });
+//   socket.on('newMessage', async (msg) => {
+//     try {
+//       // Assuming you have a Chat model to save messages
+//       const newMessage = new Chat(msg);
+//       await newMessage.save();
+//       io.emit('message', msg); // Emit the message to all clients
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   });
 
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
+//   socket.on('disconnect', () => {
+//     console.log('user disconnected');
+//   });
+// });
 
-httpServer.listen(port, () => {
-  console.log(`Socket.IO server running on port ${port}`);
-});
+// httpServer.listen(port, () => {
+//   console.log(`Socket.IO server running on port ${port}`);
+// });
 
 export default app;
 
