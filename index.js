@@ -182,8 +182,16 @@ app.delete('/posts/:id', async (req, res) => {
 // Add a new comment
 app.post('/api/posts/:postId/comments', async (req, res) => {
   try {
+    console.log("Request Body:", req.body);
+    console.log("Post ID:", req.params.postId);
+
     const { content, parentId, username } = req.body;
     const { postId } = req.params;
+
+    if (!content || !username) {
+      return res.status(400).json({ error: 'Content and username are required' });
+    }
+    
     const newComment = new Comment({ content, username, postId, parentId: parentId || null });
     await newComment.save();
     res.status(201).json(newComment);
