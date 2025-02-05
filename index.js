@@ -47,7 +47,8 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: 'https://full-stack-shop-rouge.vercel.app', 
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
+    credentials:true
   }
 });
 
