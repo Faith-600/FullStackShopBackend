@@ -39,7 +39,7 @@ app.use(session({
     mongoUrl: mongoUrl, 
     collectionName: 'sessions',
   })
-  cookie: { maxAge: 1000 * 60 * 60 * 24 }
+ 
 }));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
