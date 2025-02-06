@@ -193,21 +193,35 @@ app.post('/api/posts/:postId/comments', async (req, res) => {
           return res.status(400).json({ error: 'Content and username are required' });
       }
 
-      const newComment = new Comment({ content, username, postId, parentId: parentId || null });
+      // Convert postId to ObjectId
+      const postObjectId = new mongoose.Types.ObjectId(postId);
+
+      // Create the comment
+      const newComment = new Comment({ 
+          content, 
+          username, 
+          postId: postObjectId, // Save as ObjectId
+          parentId: parentId ? new mongoose.Types.ObjectId(parentId) : null 
+      });
+
       await newComment.save();
-      console.log('New comment saved:', newComment); // Log the saved comment
+      console.log('New comment saved:', newComment);
       res.status(201).json(newComment);
   } catch (err) {
-      console.error('Error saving comment:', err); // Log the error
+      console.error('Error saving comment:', err);
       res.status(500).json({ error: 'Failed to add comment' });
   }
 });
+
 
 // Get comments for a specific post
 app.get('/api/posts/:postId/comments', async (req, res) => {
   try {
       console.log('Fetching comments for postId:', req.params.postId); // Log the postId
-      const comments = await Comment.find({ postId: req.params.postId }).sort({ createdAt: -1 });
+
+      const postId = new mongoose.Types.ObjectId(req.params.postId); // Convert to ObjectId
+      const comments = await Comment.find({ postId }).sort({ createdAt: -1 });
+
       console.log('Fetched comments:', comments); // Log the fetched comments
       res.status(200).json(comments);
   } catch (err) {
@@ -215,21 +229,6 @@ app.get('/api/posts/:postId/comments', async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch comments.' });
   }
 });
-
-
-// // Get Comments for a Specific Post
-// app.get('/api/posts/:postId/comments', (req, res) => {
-//   const { postId } = req.params;
-
-//   const query = 'SELECT * FROM comments WHERE postId = ? ORDER BY createdAt DESC';
-//   db.query(query, [postId], (err, results) => {
-//       if (err) {
-//           console.error('Error fetching comments:', err);
-//           return res.status(500).json({ error: 'Failed to fetch comments.' });
-//       }
-//       res.status(200).json(results);
-//   });
-// });
 
 
 
