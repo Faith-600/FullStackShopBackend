@@ -39,18 +39,12 @@ app.use(session({
     mongoUrl: mongoUrl, 
     collectionName: 'sessions',
   })
+  cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// const httpServer = createServer(app); 
-// const io = new Server(httpServer, {
-//   cors: {
-//     origin: 'https://full-stack-shop-rouge.vercel.app', 
-//     methods: ["GET", "POST"],
-//     credentials:true
-//   }
-// });
+
 
 
 mongoose.connect(mongoUrl,{
@@ -245,6 +239,7 @@ app.get("/users", async (req, res) => {
 });
 
 // // Getting message 
+
 // Get messages between two users
 app.get('/messages/:sender/:receiver', async (req, res) => {
   const { sender, receiver } = req.params;
@@ -283,28 +278,7 @@ app.post('/messages', async (req, res) => {
   }
 });
 
-// io.on('connection', (socket) => {
-  // console.log('connected');
 
-//   socket.on('newMessage', async (msg) => {
-//     try {
-//       // Assuming you have a Chat model to save messages
-//       const newMessage = new Chat(msg);
-//       await newMessage.save();
-//       io.emit('message', msg); // Emit the message to all clients
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   });
-
-//   socket.on('disconnect', () => {
-//     console.log('user disconnected');
-//   });
-// });
-
-// httpServer.listen(port, () => {
-//   console.log(`Socket.IO server running on port ${port}`);
-// });
 
 export default app;
 
