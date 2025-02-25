@@ -4,7 +4,6 @@ import cors from 'cors';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-// import { Server } from 'socket.io'
 import {createServer} from 'http'
 import dotenv  from 'dotenv'
 import User from './Models/User.js'
@@ -25,11 +24,24 @@ const port =process.env.PORT || 3001;
 const sessionSecret = process.env.SESSION_SECRET;
 
 const app = express();
-app.use(cors({
-  origin:'https://full-stack-shop-rouge.vercel.app',
-  methods:["POST","GET",'PUT', 'DELETE'],
-  credentials:true
-}));
+const allowedOrigins = [
+  "https://full-stack-shop-rouge.vercel.app", // Deployed frontend
+  "http://localhost:8081", // React Native (Metro bundler)
+ ];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["POST", "GET", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(session({
   secret: sessionSecret,          
