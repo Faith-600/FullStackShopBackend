@@ -73,10 +73,10 @@ mongoose.connect(mongoUrl,{
 
 
 
-
 app.get('/', (req, res) => {
   res.json({ message: 'Hello from the serverless function!' });
 });
+
 
 app.get('/',(req,res)=>{
   if(req.session.name){
