@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "mongoserver",
   "version": "1.0.0",
   "main": "index.js",
@@ -12,16 +13,31 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^5.1.1",
+=======
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+>>>>>>> 8d98f5a (Added a dependecy for push notifcations)
     "body-parser": "^1.20.3",
     "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+<<<<<<< HEAD
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "http": "^0.0.1-security",
      "mongodb": "^6.13.0",
     "mongoose": "^8.9.6",
     "socket.io": "^4.8.1"
+=======
+    "expo-server-sdk": "^3.14.0",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.10.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+>>>>>>> 8d98f5a (Added a dependecy for push notifcations)
   }
 }
