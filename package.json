@@ -4,7 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -20,11 +22,9 @@
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.13.0",
-    "mongoose": "^8.10.1",
-    "socket.io": "^4.8.1",
-    "expo-server-sdk": "^3.14.0",
-    "jsonwebtoken": "^9.0.2"
+    "mongoose": "^8.10.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
