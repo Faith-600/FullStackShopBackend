@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
@@ -15,3 +14,4 @@ userSchema.pre('save', async function(next) {
 });
 
 export default mongoose.model('User', userSchema);
+

@@ -27,7 +27,7 @@ const app = express();
 const allowedOrigins = [
   "https://full-stack-shop-rouge.vercel.app", // Deployed frontend
   "http://localhost:8081", // React Native (Metro bundler)
- ];
+];
 
 app.use(
   cors({
@@ -68,7 +68,7 @@ mongoose.connect(mongoUrl,{
     });
   }).catch((err) => {
     console.error('MongoDB connection error:', err);
-  });
+  // });
 
 
 
