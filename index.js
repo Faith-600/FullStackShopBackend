@@ -61,18 +61,11 @@ app.use(bodyParser.json());
 
 mongoose.connect(mongoUrl,{
   serverSelectionTimeoutMS: 5000,
-}).then(() => {
-    console.log('Connected to MongoDB')
-    app.listen(port, ()=>{
-      console.log("server is running on port " + port)
-    });
-  }).catch((err) => {
+}).then(() => console.log('Connected to MongoDB')).catch((err) => {
     console.error('MongoDB connection error:', err);
   });
 
-
-
-
+ 
 app.get('/', (req, res) => {
   res.json({ message: 'Hello from the serverless function!' });
 });
@@ -294,6 +287,8 @@ app.post('/messages', async (req, res) => {
 
 export default app;
 
-
+app.listen(port, ()=>{
+  console.log("server is running on port " + port)
+});
 
 
