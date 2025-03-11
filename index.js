@@ -4,7 +4,7 @@ import cors from 'cors';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import dotenv  from 'dotenv'
+import dotenv  from 'dotenv';
 import User from './Models/User.js'
 import Post from './Models/Post.js'
 import Comment from './Models/Comment.js'
@@ -123,13 +123,14 @@ app.post('/login', async (req, res) => {
     const isValid = await bcrypt.compare(req.body.password, user.password);
     if (!isValid) return res.json({ Login: false });
 
-    if (pushToken) {
-      await User.updateOne({ _id: user._id }, { $set: { pushToken } });
+    if (pushToken && !user.pushTokens.includes(pushToken)) {
+      await User.updateOne({ _id: user._id }, { $push: { pushTokens: pushToken } });
     }
 
     req.session.name = user.name;
     res.json({ Login: true, user });
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ message: 'Error inside server' });
   }
 });
