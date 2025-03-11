@@ -4,7 +4,6 @@ import cors from 'cors';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import {createServer} from 'http'
 import dotenv  from 'dotenv'
 import User from './Models/User.js'
 import Post from './Models/Post.js'
@@ -12,13 +11,14 @@ import Comment from './Models/Comment.js'
 import Message from './Models/Message.js';
 import bcrypt from 'bcrypt';
 import MongoStore from 'connect-mongo';
+import {Expo} from 'expo-server-sdk'
 
 
 dotenv.config();
 
 const mongoUrl = process.env.MONGO_URL;
 const port = process.env.PORT || 3001;
-
+const expo = new Expo();
 
 
 
@@ -116,11 +116,16 @@ app.post('/users', async (req, res) => {
 // LOGINS 
 app.post('/login', async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const { email, pushToken } = req.body;
+    const user = await User.findOne({ email });
     if (!user) return res.json({ Login: false });
 
     const isValid = await bcrypt.compare(req.body.password, user.password);
     if (!isValid) return res.json({ Login: false });
+
+    if (pushToken) {
+      await User.updateOne({ _id: user._id }, { $set: { pushToken } });
+    }
 
     req.session.name = user.name;
     res.json({ Login: true, user });
@@ -176,6 +181,52 @@ app.delete('/posts/:id', async (req, res) => {
   }
 });
 
+// Adding Push Notifications 
+
+app.post("/create-post", async (req, res) => {
+  try {
+    const { name, content } = req.body;
+
+    // Save the new post
+    const newPost = new Post({ name, content });
+    await newPost.save();
+
+    // Fetch all users with valid push tokens
+    const users = await User.find({ pushToken: { $exists: true } });
+    const pushTokens = users
+      .map(user => user.pushToken)
+      .filter(token => Expo.isExpoPushToken(token)); 
+
+    if (pushTokens.length === 0) {
+      return res.json({ success: true, message: "Post created but no users have valid push tokens" });
+    }
+
+    // Create notification messages
+    const messages = pushTokens.map(token => ({
+      to: token,
+      sound: "default",
+      title: "New Post!",
+      body: `${name} just posted: "${content}"`,
+    }));
+
+    // Send notifications in chunks
+    let chunks = expo.chunkPushNotifications(messages);
+    let tickets = [];
+    for (let chunk of chunks) {
+      try {
+        let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        tickets.push(...ticketChunk);
+      } catch (error) {
+        console.error("Error sending notification chunk:", error);
+      }
+    }
+
+    res.json({ success: true, message: "Post created and notifications sent" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Error creating post" });
+  }
+});
 
 
 
