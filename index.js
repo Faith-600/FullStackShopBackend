@@ -144,6 +144,34 @@ app.post('/posts', async (req, res) => {
     const { content, username } = req.body;
     const newPost = new Post({ content, username });
     await newPost.save();
+
+    // Fetch all users' push tokens
+    const users = await User.find({}, 'pushTokens');
+    const pushTokens = users
+      .flatMap(user => user.pushTokens)
+      .filter(token => Expo.isExpoPushToken(token));
+
+      // Send notifications if there are valid tokens
+    if (pushTokens.length > 0) {
+      const messages = pushTokens.map(token => ({
+        to: token,
+        sound: 'default',
+        title: 'New Post',
+        body: `${username}: ${content.slice(0, 100)}...`,
+        data: { postId: newPost._id },
+      }));
+
+      const chunks = expo.chunkPushNotifications(messages);
+      for (const chunk of chunks) {
+        try {
+          await expo.sendPushNotificationsAsync(chunk);
+          console.log('Notifications sent to:', chunk.map(msg => msg.to));
+        } catch (error) {
+          console.error('Notification error:', error);
+        }
+      }
+    }
+    
     res.status(201).json(newPost);
   } catch (err) {
     res.status(500).json({ error: 'Failed to save post.' });
@@ -183,52 +211,6 @@ app.delete('/posts/:id', async (req, res) => {
   }
 });
 
-// Adding Push Notifications 
-
-app.post("/create-post", async (req, res) => {
-  try {
-    const { name, content } = req.body;
-
-    // Save the new post
-    const newPost = new Post({ name, content });
-    await newPost.save();
-
-    // Fetch all users with valid push tokens
-    const users = await User.find({ pushToken: { $exists: true } });
-    const pushTokens = users
-      .map(user => user.pushToken)
-      .filter(token => Expo.isExpoPushToken(token)); 
-
-    if (pushTokens.length === 0) {
-      return res.json({ success: true, message: "Post created but no users have valid push tokens" });
-    }
-
-    // Create notification messages
-    const messages = pushTokens.map(token => ({
-      to: token,
-      sound: "default",
-      title: "New Post!",
-      body: `${name} just posted: "${content}"`,
-    }));
-
-    // Send notifications in chunks
-    let chunks = expo.chunkPushNotifications(messages);
-    let tickets = [];
-    for (let chunk of chunks) {
-      try {
-        let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-        tickets.push(...ticketChunk);
-      } catch (error) {
-        console.error("Error sending notification chunk:", error);
-      }
-    }
-
-    res.json({ success: true, message: "Post created and notifications sent" });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ message: "Error creating post" });
-  }
-});
 
 
 
