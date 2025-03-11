@@ -125,6 +125,7 @@ app.post('/login', async (req, res) => {
 
     if (pushToken && !user.pushTokens.includes(pushToken)) {
       await User.updateOne({ _id: user._id }, { $push: { pushTokens: pushToken } });
+      console.log('Token saved:', pushToken);
     }
 
     req.session.name = user.name;
