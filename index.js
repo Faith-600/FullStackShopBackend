@@ -151,6 +151,8 @@ app.post('/posts', async (req, res) => {
       .flatMap(user => user.pushTokens)
       .filter(token => Expo.isExpoPushToken(token));
 
+      console.log('Found push tokens:', pushTokens);
+
       // Send notifications if there are valid tokens
     if (pushTokens.length > 0) {
       const messages = pushTokens.map(token => ({
@@ -171,7 +173,7 @@ app.post('/posts', async (req, res) => {
         }
       }
     }
-    
+
     res.status(201).json(newPost);
   } catch (err) {
     res.status(500).json({ error: 'Failed to save post.' });
@@ -300,9 +302,6 @@ app.get('/messages/:sender/:receiver', async (req, res) => {
   }
 });
 
-
-
-
 // Post a message
 app.post('/messages', async (req, res) => {
   const { sender, receiver, content } = req.body;
@@ -311,14 +310,47 @@ app.post('/messages', async (req, res) => {
    
     const newMessage = new Message({ sender, receiver, content });
     await newMessage.save();
-  //  io.emit('newMessage', { sender, receiver, content });
-   res.status(201).json({ message: 'Message sent successfully.' });
+
+    const receiverUser = await User.findOne({ username: receiver });
+    if (!receiverUser || !receiverUser.pushTokens) {
+      console.log(`No push token found for ${receiver}`);
+      return res.status(201).json({ message: 'Message sent successfully, no notification sent.' });
+    }
+
+    const pushToken = receiverUser.pushTokens;
+    const notificationPayload = {
+      to: pushToken,
+      title: `New Message from ${sender}`,
+      body: content,
+      data: { sender, receiver, content }, 
+    };
+    await axios.post('https://exp.host/--/api/v2/push/send', notificationPayload, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      console.log('Push notification sent:', response.data);
+    }).catch((error) => {
+      console.error('Error sending push notification:', error.response?.data || error.message);
+    });
+    res.status(201).json({ message: 'Message sent successfully.' });
   } catch (err) {
-    console.error('Error saving message:', err);
+    console.error('Error saving message or sending notification:', err);
     res.status(500).json({ error: 'Failed to save message.' });
   }
 });
+ 
+app.post('/update-token', async (req, res) => {
+  const { name, pushToken } = req.body; 
 
+  try {
+    await User.updateOne({ username: name }, { pushToken }, { upsert: true });
+    res.status(200).json({ message: 'Token updated successfully.' });
+  } catch (err) {
+    console.error('Error updating token:', err);
+    res.status(500).json({ error: 'Failed to update token.' });
+  }
+});
 
 
 export default app;
