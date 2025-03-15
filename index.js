@@ -311,7 +311,7 @@ app.post('/messages', async (req, res) => {
     const newMessage = new Message({ sender, receiver, content });
     await newMessage.save();
 
-    const receiverUser = await User.findOne({ username: receiver });
+    const receiverUser = await User.findOne({ name: receiver });
     if (!receiverUser || !receiverUser.pushTokens) {
       console.log(`No push token found for ${receiver}`);
       return res.status(201).json({ message: 'Message sent successfully, no notification sent.' });
@@ -344,7 +344,7 @@ app.post('/update-token', async (req, res) => {
   const { name, pushToken } = req.body; 
 
   try {
-    await User.updateOne({ username: name }, { pushToken }, { upsert: true });
+    await User.updateOne({name }, { $push: { pushTokens: pushToken } }, { upsert: true });
     res.status(200).json({ message: 'Token updated successfully.' });
   } catch (err) {
     console.error('Error updating token:', err);
