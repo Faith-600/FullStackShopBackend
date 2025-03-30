@@ -295,7 +295,7 @@ app.get('/messages/:sender/:receiver', async (req, res) => {
       ],
     }).sort({ createdAt: 1 }); 
 
-    res.status(200).json(messages);
+    res.status(200).json(messages || []);
   } catch (err) {
     console.error('Error fetching messages:', err);
     res.status(500).json({ error: 'Failed to fetch messages.' });
